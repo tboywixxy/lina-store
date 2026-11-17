@@ -1,36 +1,38 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Lina Store catalogue
 
-## Getting Started
+A mobile-first gym wear and fitness accessories catalogue built with React, Vite, TypeScript, Tailwind CSS, and React Router. Customers can search and filter 96 screenshot-sourced listings, add them to a persistent bag, and prepare a complete WhatsApp order enquiry. There is no database or payment gateway.
 
-First, run the development server:
+## Run locally
+
+Requires Node.js 20.19+ or 22.12+.
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the local address printed by Vite. To verify a production build:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm run build
+npm run preview
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+The static output is `dist/`. Deploy that directory to any static host configured to serve `index.html` for unknown paths so product URLs and the cart work on refresh. Netlify can use the included `public/_redirects`; for other hosts, configure an equivalent SPA fallback.
 
-## Learn More
+## Edit the store
 
-To learn more about Next.js, take a look at the following resources:
+- **Name, text logo, optional image logo, colours, WhatsApp number, and optional contact links:** [`src/config/store.ts`](src/config/store.ts). The name is a temporary label pending confirmation. To use an image logo, put it in `public/` and set `logoUrl` to a path such as `/logo.svg`.
+- **Products and prices:** [`src/data/catalogue.ts`](src/data/catalogue.ts). Each row belongs to a size group or the accessory group. The price is in whole Nigerian naira; use `null` when unverified. An item with a null price can be added to the bag, but WhatsApp checkout is disabled until the item is removed or its price is confirmed in the data.
+- **Product photos:** See [`IMAGE_UPLOAD_GUIDE.md`](IMAGE_UPLOAD_GUIDE.md) for every exact folder. Every listing already has a dedicated folder with `.gitkeep`. Copy original product photos into its folder; do not use the WhatsApp catalogue screenshots. Supported extensions are JPG, JPEG, PNG, WebP and AVIF. Name the preferred main photo `cover.jpg` or `front.jpg`; other images appear in the detail gallery. Images are discovered at build time by folder, so no component imports need changing.
+- **New products:** Add a unique row to the catalogue, then run `npm run prepare:images` to create its folder and refresh the upload guide.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Vite detects added image files during local development. A deployed static site needs a fresh `npm run build` and redeployment of `dist/` after new images are added.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Checkout behaviour
 
-## Deploy on Vercel
+The bag is saved in the browser's local storage. The “Buy on WhatsApp” link creates a URL-encoded message with every item, applicable size, quantity, unit price, subtotal, and total. It opens WhatsApp for the customer to send; opening WhatsApp does not place an order or empty the bag. Availability, delivery fees, and payment details are confirmed in the conversation.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Catalogue review
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+See [`CATALOGUE_REVIEW.md`](CATALOGUE_REVIEW.md) for source ambiguities, truncated WhatsApp text, and prices needing confirmation. The screenshots were used only as catalogue references and are excluded from the website.
